@@ -1,0 +1,606 @@
+{
+  "version": "1.1",
+  "last_updated": "2026-07-05",
+  "schema": "see workflow entries for field definitions",
+  "categories": [
+    {
+      "id": "content-production",
+      "name": "内容生产",
+      "icon": "📝",
+      "description": "文章创作、生成、发布",
+      "subcategories": [
+        {"id": "deep-writing", "name": "深度写作", "workflows": ["W01"]},
+        {"id": "quick-publish", "name": "快速发布", "workflows": ["W02"]},
+        {"id": "multi-platform", "name": "多平台分发", "workflows": ["W03"]},
+        {"id": "content-fusion", "name": "融合创作", "workflows": ["W04"]},
+        {"id": "zhihu-answer", "name": "知乎回答", "workflows": ["W08"]}
+      ]
+    },
+    {
+      "id": "video-production",
+      "name": "视频生产",
+      "icon": "🎬",
+      "description": "视频生成、渲染、上传",
+      "subcategories": [
+        {"id": "video-pipeline", "name": "视频管线", "workflows": ["W05"]}
+      ]
+    },
+    {
+      "id": "operations",
+      "name": "运营工具",
+      "icon": "🔧",
+      "description": "日常运营、审计、自动化",
+      "subcategories": [
+        {"id": "audit", "name": "审计", "workflows": ["W06"]},
+        {"id": "email", "name": "邮件", "workflows": ["W07"]},
+        {"id": "goofish", "name": "闲鱼", "workflows": ["W09"]},
+        {"id": "dashboard", "name": "仪表盘", "workflows": ["W10"]},
+        {"id": "reasoning-match", "name": "谜题匹配", "workflows": ["W11"]}
+      ]
+    },
+    {
+      "id": "housekeeping",
+      "name": "收尾维护",
+      "icon": "🧹",
+      "description": "项目收尾、记忆存储",
+      "subcategories": [
+        {"id": "project-close", "name": "项目收尾", "workflows": ["W12"]},
+        {"id": "memory-save", "name": "存记忆", "workflows": ["W13"]}
+      ]
+    },
+    {
+      "id": "external-systems",
+      "name": "外部系统",
+      "icon": "🏗️",
+      "description": "非内容管线的独立系统",
+      "subcategories": [
+        {"id": "cad", "name": "CAD生成", "workflows": ["EXT01"]},
+        {"id": "multi-agent", "name": "多智能体", "workflows": ["EXT02"]},
+        {"id": "monetization", "name": "变现漏斗", "workflows": ["EXT03"]}
+      ]
+    }
+  ],
+  "workflows": {
+    "W01": {
+      "name": "Content Orchestrator",
+      "name_zh": "三AI全流程写文章",
+      "status": "active",
+      "priority": "P0",
+      "category": "content-production",
+      "subcategory": "deep-writing",
+      "triggers": [
+        "发文", "开始运营", "今天发什么", "写文章",
+        "三AI协作", "精耕细作", "深度写", "出文章",
+        "好好写", "深度文章", "用心写"
+      ],
+      "exclude_triggers": ["快速", "一键", "紧急"],
+      "synonyms": {
+        "写一篇": "写文章",
+        "运营": "开始运营",
+        "今天发啥": "今天发什么",
+        "来个文章": "写文章",
+        "深度好文": "深度写",
+        "好好写一篇": "深度写"
+      },
+      "entry_script": "~/catalog/scripts/content_orchestrator.py",
+      "skill": "content-orchestrator",
+      "steps_count": 7,
+      "steps": [
+        "Step 0: 参数解析 (topic + track + mode)",
+        "Step 1: 选题调研 (豆包/Gemini/DeepSeek 自动降级)",
+        "Step 2: 骨架生成 (三AI之一出初稿)",
+        "Step 3: 精加工 (文献补充+修正)",
+        "Step 4: 文章组装 (清洗+合并+写入文件)",
+        "Step 5: 公众号发布 (调publish_one.py)",
+        "Step 6: 视频生成 (可选, videopipeline)",
+        "Step 7: 内容登记 (dashboard)"
+      ],
+      "prompts_summary": "TRACKS字典嵌入脚本: doubao_prompt + gemini_prompt 各两条内容线",
+      "prompts_file": "~/catalog/scripts/content_orchestrator.py (112-142行)",
+      "arch_doc": "~/architectures/systems/content-orchestrator/README.md",
+      "output": "公众号草稿 (可选+视频)",
+      "requires_manual": "发布需手动点公众号后台「发布」",
+      "notes": "核心管线。运行时有人工审核闸门(每步可选继续/修改/重做/跳过)。自动降级链: 豆包→Gemini→DeepSeek。两条内容线: --track ai (提效实战派) / --track thinking (哲思)"
+    },
+
+    "W02": {
+      "name": "Quick Publish",
+      "name_zh": "单AI快速发文",
+      "status": "active",
+      "priority": "P1",
+      "category": "content-production",
+      "subcategory": "quick-publish",
+      "triggers": [
+        "快速发文", "一键发文", "紧急发文",
+        "发一篇", "推一篇", "快速发",
+        "发一个", "随便发一篇", "简单发一篇"
+      ],
+      "exclude_triggers": ["深度", "好好", "三AI", "精耕"],
+      "synonyms": {
+        "快速来一篇": "快速发文",
+        "直接发": "一键发文",
+        "搞一篇": "发一篇",
+        "速发": "快速发"
+      },
+      "entry_script": "~/world-corner-blog/scripts/publish_one.py",
+      "skill": "wechat-publish",
+      "steps_count": 5,
+      "steps": [
+        "[0/5] AI选题 (自动搜索热点, 手动指定则跳过)",
+        "[1/5] DeepSeek搜索 (找观点+数据+逻辑矛盾)",
+        "[2/5] JSON起草 (生成标题<=9字+摘要<=17字+正文)",
+        "[3/5] 公众号推送 (封面生成+上传素材+创建草稿)",
+        "[4/5] 内容登记 (RegistryManager写入)"
+      ],
+      "prompts_summary": "嵌入publish_one.py: 文章起草prompt含标题约束+壹贰叁模板+品牌风格。支持--推理模式(迷面→解谜→答案)",
+      "prompts_file": "~/world-corner-blog/scripts/publish_one.py (60-100行)",
+      "arch_doc": "~/architectures/systems/publishing-pipeline/README.md",
+      "output": "公众号草稿",
+      "requires_manual": "发布需手动点公众号后台「发布」",
+      "notes": "快速通道。不支持审核闸门，不支持多平台分发。支持 --推理 参数切换结构为逻辑推理风格。"
+    },
+
+    "W03": {
+      "name": "Multi-Platform Publish",
+      "name_zh": "多平台分发",
+      "status": "active",
+      "priority": "P1",
+      "category": "content-production",
+      "subcategory": "multi-platform",
+      "triggers": [
+        "多平台发布", "分发", "发多个平台",
+        "全平台发布", "同步到各平台",
+        "发到知乎掘金", "多平台分发"
+      ],
+      "exclude_triggers": [],
+      "synonyms": {
+        "各个平台": "多平台发布",
+        "全部发": "全平台发布",
+        "发知乎": "发到知乎掘金"
+      },
+      "entry_script": "~/catalog/scripts/publish.py",
+      "skill": null,
+      "steps_count": 3,
+      "steps": [
+        "Step 1: 格式转换 (MD→HTML/纯文本)",
+        "Step 2: 平台适配 (品牌风格注入+各平台特殊处理)",
+        "Step 3: 逐平台分发 (串行, 失败跳过不影响其他)"
+      ],
+      "prompts_summary": "无AI生成prompt, 纯分发管线",
+      "prompts_file": null,
+      "arch_doc": "~/architectures/systems/publishing-pipeline/README.md",
+      "output": "多平台发布成功/失败报告",
+      "requires_manual": "部分Playwright平台需Cookie有效",
+      "notes": "支持: 公众号/知乎/掘金/B站/腾讯云/即刻/爱发电。单平台失败不影响其他。不生成内容,只分发。"
+    },
+
+    "W04": {
+      "name": "Content Fusion",
+      "name_zh": "借壳生蛋融合创作",
+      "status": "active",
+      "priority": "P1",
+      "category": "content-production",
+      "subcategory": "content-fusion",
+      "triggers": [
+        "融合文章", "借壳生蛋", "选题枯竭",
+        "没选题", "不知道写什么", "融合框架",
+        "创新文章", "跨界创作"
+      ],
+      "exclude_triggers": [],
+      "synonyms": {
+        "没有选题": "没选题",
+        "写什么好": "不知道写什么",
+        "怎么融合": "融合文章",
+        "新角度": "跨界创作"
+      },
+      "entry_script": null,
+      "skill": null,
+      "steps_count": 4,
+      "steps": [
+        "Step 1: 找冷门好内容 (红迪/知乎/论文/经典书)",
+        "Step 2: 选创作模式 (A热点→哲学 / B技术→人文 / C思想人物→技术 / D跨界碰撞)",
+        "Step 3: 注入品牌风格 (深海蓝+暖金)",
+        "Step 4: 走W01/W02/W03 发布"
+      ],
+      "prompts_summary": "四种创作模式的prompt见架构文档patterns/content-fusion-framework.md",
+      "prompts_file": "~/architectures/patterns/content-fusion-framework.md (待提取)",
+      "arch_doc": "~/architectures/patterns/content-fusion-framework.md",
+      "output": "文章框架/初稿 → 交给W01/W02/W03",
+      "requires_manual": "需要选创作模式",
+      "notes": "不直接执行, 是创作方法论。产出框架后再走其他发布管线。"
+    },
+
+    "W05": {
+      "name": "Video Pipeline",
+      "name_zh": "视频生成管线",
+      "status": "active",
+      "priority": "P1",
+      "category": "video-production",
+      "subcategory": "video-pipeline",
+      "triggers": [
+        "生成视频", "做视频", "视频管线",
+        "视频制作", "remotion", "素材生成",
+        "视频封面", "发布视频", "做个视频",
+        "视频渲染"
+      ],
+      "exclude_triggers": [],
+      "synonyms": {
+        "搞个视频": "做视频",
+        "视频": "生成视频",
+        "出视频": "做视频"
+      },
+      "entry_script": "~/projects/remotion-video-platform/scripts/video_pipeline.py",
+      "skill": "video-pipeline",
+      "steps_count": 6,
+      "steps": [
+        "Step 1: hook (suggest_hook.py 8种钩子公式)",
+        "Step 2: articles (文章处理/卡片组装)",
+        "Step 3: assets (generate_assets.py 封面+背景, 10套主题)",
+        "Step 4: tts (TTS语音+BGM, 钩子感知语气)",
+        "Step 5: render (Remotion渲染 1080x1920竖屏)",
+        "Step 6: registry (元数据写入)"
+      ],
+      "prompts_summary": "无AI生成prompt (除钩子推荐外), 主要是渲染管线",
+      "prompts_file": "hooks.json 8种钩子模板",
+      "arch_doc": "~/architectures/systems/video-pipeline/README.md",
+      "output": "MP4视频文件 + 注册记录",
+      "requires_manual": "渲染需要Remotion环境",
+      "notes": "依赖Remotion + TTS引擎。10套主题配色。支持--skip-assets跳过素材步骤。"
+    },
+
+    "W06": {
+      "name": "Audit Suite",
+      "name_zh": "审计五件套",
+      "status": "active",
+      "priority": "P0",
+      "category": "operations",
+      "subcategory": "audit",
+      "triggers": [
+        "审计", "审计一下", "跑审计",
+        "五件套", "代码审计", "质量检查",
+        "检查项目", "方向一审计", "全面审计"
+      ],
+      "exclude_triggers": [],
+      "synonyms": {
+        "审一下": "审计一下",
+        "审计项目": "审计",
+        "查质量": "质量检查"
+      },
+      "entry_script": null,
+      "skill": "audit",
+      "steps_count": 5,
+      "steps": [
+        "① 规则脚本审计 (方向一只跑这个)",
+        "② LangGraph审计",
+        "③ 代码审查",
+        "④ CrewAI审计",
+        "⑤ 统计审计"
+      ],
+      "prompts_summary": "见audit skill和audit-four-piece.md",
+      "prompts_file": "~/claude-memory/global/workflows/audit-four-piece.md",
+      "arch_doc": "~/claude-memory/global/workflows/audit-four-piece.md",
+      "output": "审计报告",
+      "requires_manual": "默认只跑方向一, 可指定扩展",
+      "notes": "默认只跑第一步(规则脚本审计)。审计完成后走W12收尾。"
+    },
+
+    "W07": {
+      "name": "Email Send",
+      "name_zh": "发邮件",
+      "status": "active",
+      "priority": "P1",
+      "category": "operations",
+      "subcategory": "email",
+      "triggers": [
+        "发邮件", "写邮件", "发信",
+        "邮件通知", "发给", "email"
+      ],
+      "exclude_triggers": [],
+      "synonyms": {
+        "发一封邮件": "发邮件",
+        "写信": "写邮件",
+        "通知": "邮件通知"
+      },
+      "entry_script": "~/catalog/scripts/gmail_v3.py",
+      "skill": "send-email",
+      "steps_count": 2,
+      "steps": [
+        "Step 1: 确定收件人+主题+正文",
+        "Step 2: SMTP发送 (QQ邮箱授权码)"
+      ],
+      "prompts_summary": "无需AI prompt, 纯发信工具",
+      "prompts_file": null,
+      "arch_doc": null,
+      "output": "邮件发送成功/失败",
+      "requires_manual": "QQ邮箱授权码需持久保存",
+      "notes": "支持纯文本和HTML正文, 支持附件。"
+    },
+
+    "W08": {
+      "name": "Zhihu Answer",
+      "name_zh": "知乎自动回答",
+      "status": "active",
+      "priority": "P1",
+      "category": "content-production",
+      "subcategory": "zhihu-answer",
+      "triggers": [
+        "知乎回答", "自动答", "知乎问题",
+        "答知乎", "知乎自动", "知乎运营"
+      ],
+      "exclude_triggers": [],
+      "synonyms": {
+        "回答知乎": "知乎回答",
+        "知乎": "知乎回答",
+        "自动回答": "自动答"
+      },
+      "entry_script": "~/world-corner-blog/scripts/zhihu_answer.py",
+      "skill": null,
+      "steps_count": 3,
+      "steps": [
+        "Step 1: 搜高浏览量低回答数问题",
+        "Step 2: 匹配内容库生成回答",
+        "Step 3: 自动发布"
+      ],
+      "prompts_summary": "嵌入zhihu_answer.py",
+      "prompts_file": "~/world-corner-blog/scripts/zhihu_answer.py",
+      "arch_doc": null,
+      "output": "知乎回答发布",
+      "requires_manual": "需Cookie有效",
+      "notes": "自动发现长尾问题+回答。zhihu_answer_search.py是配套工具。"
+    },
+
+    "W09": {
+      "name": "Goofish Delivery",
+      "name_zh": "闲鱼发货",
+      "status": "active",
+      "priority": "P1",
+      "category": "operations",
+      "subcategory": "goofish",
+      "triggers": [
+        "闲鱼发货", "商品发货", "发货",
+        "自动发货", "闲鱼", "发订单"
+      ],
+      "exclude_triggers": [],
+      "synonyms": {
+        "发一下货": "发货",
+        "闲鱼订单": "闲鱼发货"
+      },
+      "entry_script": "~/catalog/scripts/goofish_delivery.py",
+      "skill": null,
+      "steps_count": 2,
+      "steps": [
+        "Step 1: 检测新订单",
+        "Step 2: 自动发送下载链接 (--watch 后台轮询)"
+      ],
+      "prompts_summary": "无需AI prompt",
+      "prompts_file": null,
+      "arch_doc": null,
+      "output": "订单发送记录",
+      "requires_manual": "--watch模式需后台运行",
+      "notes": "支持 --watch 参数后台轮询(每5分钟检查新订单)。"
+    },
+
+    "W10": {
+      "name": "Content Dashboard",
+      "name_zh": "内容仪表盘",
+      "status": "active",
+      "priority": "P2",
+      "category": "operations",
+      "subcategory": "dashboard",
+      "triggers": [
+        "仪表盘", "发布状态", "查看发布",
+        "统计", "内容统计", "面板",
+        "看数据", "发布记录"
+      ],
+      "exclude_triggers": [],
+      "synonyms": {
+        "看看数据": "看数据",
+        "状态": "发布状态",
+        "什么情况": "发布状态"
+      },
+      "entry_script": "~/catalog/scripts/content_dashboard.py",
+      "skill": null,
+      "steps_count": 1,
+      "steps": [
+        "启动Web服务: python content_dashboard.py serve"
+      ],
+      "prompts_summary": "无AI prompt",
+      "prompts_file": null,
+      "arch_doc": null,
+      "output": "Web仪表盘 (http://localhost:5000)",
+      "requires_manual": "需浏览器访问",
+      "notes": "还支持 list --pending / summary 等子命令。"
+    },
+
+    "W11": {
+      "name": "Reasoning Match",
+      "name_zh": "推理解谜匹配",
+      "status": "draft",
+      "priority": "P2",
+      "category": "operations",
+      "subcategory": "reasoning-match",
+      "triggers": [
+        "谜题匹配", "推理解谜", "找谜题",
+        "推理素材", "逻辑谜题", "配谜题"
+      ],
+      "exclude_triggers": [],
+      "synonyms": {
+        "谜题": "找谜题",
+        "逻辑题": "逻辑谜题"
+      },
+      "entry_script": "~/world-corner-blog/scripts/logic_matcher.py",
+      "skill": null,
+      "steps_count": 2,
+      "steps": [
+        "Step 1: 提取文章关键词",
+        "Step 2: 匹配推理库index.json返回推荐"
+      ],
+      "prompts_summary": "无AI prompt, 关键词匹配",
+      "prompts_file": null,
+      "arch_doc": "~/architectures/systems/reasoning-library/README.md",
+      "output": "推荐谜题ID + 类型 + 融入建议",
+      "requires_manual": "需人工决定是否融入文章",
+      "notes": "开发中。配套仓库: world-corner-blog/reasoning-library/"
+    },
+
+    "W12": {
+      "name": "Project Close",
+      "name_zh": "项目收尾三件套",
+      "status": "active",
+      "priority": "P0",
+      "category": "housekeeping",
+      "subcategory": "project-close",
+      "triggers": [
+        "收尾", "项目做完", "做完了",
+        "清理", "完结", "搞完了",
+        "阶段性完成", "结束了"
+      ],
+      "exclude_triggers": [],
+      "synonyms": {
+        "完成": "收尾",
+        "完事了": "做完了",
+        "搞定了": "搞完了"
+      },
+      "entry_script": null,
+      "skill": null,
+      "steps_count": 3,
+      "steps": [
+        "① 审计五件套 (方向一)",
+        "② 存经验 (claude-memory/ + commit+push)",
+        "③ 写成文章 (提炼原则→品牌风格→发布)"
+      ],
+      "prompts_summary": "各步有独立文档",
+      "prompts_file": "~/claude-memory/global/workflows/daily-pipeline.md",
+      "arch_doc": null,
+      "output": "审计报告 + 记忆 + 文章",
+      "requires_manual": "各步独立, 可跳过",
+      "notes": "项目收尾标准流程。按顺序走。"
+    },
+
+    "W13": {
+      "name": "Memory Save",
+      "name_zh": "存经验到记忆仓库",
+      "status": "active",
+      "priority": "P0",
+      "category": "housekeeping",
+      "subcategory": "memory-save",
+      "triggers": [
+        "存经验", "存记忆", "记一下",
+        "记住了", "保存到记忆",
+        "存到仓库", "写记忆"
+      ],
+      "exclude_triggers": [],
+      "synonyms": {
+        "记住": "记一下",
+        "保存": "存经验",
+        "写进记忆": "写记忆",
+        "记下来": "记一下"
+      },
+      "entry_script": null,
+      "skill": null,
+      "steps_count": 4,
+      "steps": [
+        "Step 1: 检查是否有相似记忆(有则升级,不新建碎片)",
+        "Step 2: 写入 ~/claude-memory/ 对应目录",
+        "Step 3: 更新 TRIGGERS.md + MEMORY.md",
+        "Step 4: git add + commit + push"
+      ],
+      "prompts_summary": "无需AI prompt, 标准化流程",
+      "prompts_file": null,
+      "arch_doc": null,
+      "output": "记忆文件 + git commit",
+      "requires_manual": "无需",
+      "notes": "铁律: 犯错/踩坑/学新工具/用户纠正后立刻执行。"
+    },
+
+    "EXT01": {
+      "name": "TextToCAD",
+      "name_zh": "NL→CAD生成",
+      "status": "active",
+      "priority": "P0",
+      "category": "external-systems",
+      "subcategory": "cad",
+      "triggers": [
+        "CAD", "FreeCAD", "AutoCAD",
+        "生成CAD", "画图", "三维建模"
+      ],
+      "exclude_triggers": [],
+      "synonyms": null,
+      "entry_script": null,
+      "skill": null,
+      "steps_count": 4,
+      "steps": [
+        "Step 1: tool_plan (LangGraph规划)",
+        "Step 2: tool_generate_code (生成FreeCAD脚本)",
+        "Step 3: tool_validate (验证输出)",
+        "Step 4: tool_fix (失败则修复循环)"
+      ],
+      "prompts_summary": "见架构文档",
+      "prompts_file": "~/architectures/systems/text-to-cad/README.md",
+      "arch_doc": "~/architectures/systems/text-to-cad/README.md",
+      "output": "FreeCAD可执行的Python脚本",
+      "requires_manual": "需要FreeCAD环境验证",
+      "notes": "LangGraph四工具循环。validate→fix循环最多N轮。"
+    },
+
+    "EXT02": {
+      "name": "Reasonix",
+      "name_zh": "多智能体编排平台",
+      "status": "active",
+      "priority": "P0",
+      "category": "external-systems",
+      "subcategory": "multi-agent",
+      "triggers": [
+        "Reasonix", "多智能体", "智能体编排",
+        "AI团队", "Agent团队"
+      ],
+      "exclude_triggers": [],
+      "synonyms": null,
+      "entry_script": null,
+      "skill": null,
+      "steps_count": 5,
+      "steps": [
+        "Orchestrator路由→Scout搜索→Judge评审→RoleFix修复→Executor执行"
+      ],
+      "prompts_summary": "见架构文档",
+      "prompts_file": "~/architectures/systems/reasonix/README.md",
+      "arch_doc": "~/architectures/systems/reasonix/README.md",
+      "output": "多智能体协作输出",
+      "requires_manual": "需要配置",
+      "notes": "Wave 6.0: Executor独占执行权。含AgentDropout/EARS/并行择优选代。"
+    },
+
+    "EXT03": {
+      "name": "Content Monetization Funnel",
+      "name_zh": "AI内容变现漏斗",
+      "status": "active",
+      "priority": "P2",
+      "category": "external-systems",
+      "subcategory": "monetization",
+      "triggers": [
+        "变现", "赚钱", "付费文章",
+        "内容变现", "怎么赚钱"
+      ],
+      "exclude_triggers": [],
+      "synonyms": {
+        "搞钱": "赚钱",
+        "怎么变现": "变现"
+      },
+      "entry_script": null,
+      "skill": null,
+      "steps_count": 4,
+      "steps": [
+        "Layer 1: 免费文章(Attention Gateway)",
+        "Layer 2: GitHub仓库(Trust Layer)",
+        "Layer 3: 付费订阅(¥199/年)",
+        "Layer 4: 企业咨询(远期)"
+      ],
+      "prompts_summary": "见架构文档(英文)",
+      "prompts_file": "~/architectures/systems/content-monetization/README.md",
+      "arch_doc": "~/architectures/systems/content-monetization/README.md",
+      "output": "变现策略/定价方案",
+      "requires_manual": "需粉丝量达标",
+      "notes": "四层漏斗。目前状态: waiting-audience。"
+    }
+  }
+}
