@@ -22,6 +22,15 @@
 | Content Orchestrator | [systems/content-orchestrator/](./systems/content-orchestrator/) | ✅ 生产运行 | 三AI编排+自动降级 |
 | Publishing Pipeline V9 | [systems/publishing-pipeline/](./systems/publishing-pipeline/) | ✅ 生产运行 | 七平台分发 |
 
+## 工作流注册表 (Workflow Registry)
+
+| 工作流 | 目录 | 说明 |
+|------|------|------|
+| Workflow Registry | [workflows/REGISTRY.md](./workflows/REGISTRY.md) | **唯一触发注册表** — 所有工作流的触发词→步骤→提示词映射 |
+| W01 Content Orchestrator | [systems/content-orchestrator/](./systems/content-orchestrator/) | 三AI全流程：豆包→Gemini→DeepSeek→审核→发布 |
+| W02 Quick Publish | [systems/publishing-pipeline/](./systems/publishing-pipeline/) | 单AI快速发文：DeepSeek→起草→推送 |
+| W05 Video Pipeline | [systems/video-pipeline/](./systems/video-pipeline/) | 视频生成：hook→TTS→Remotion渲染→上传 |
+
 ## 架构模式
 
 | 模式 | 目录 | 说明 |
@@ -41,3 +50,4 @@
 | 参考 | 目录 | 来源 |
 |------|------|------|
 | — | [references/](./references/) | — |
+
